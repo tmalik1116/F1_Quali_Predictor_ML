@@ -515,5 +515,5 @@ if __name__=="__main__":
 # use Q1 times for everyone but add the average improvement from 10 in Q3 to everyone for track evolution
 # downside is that top drivers are not pushing in Q1 so may be inaccurate
 
-# Can alternatively use fastest times for everyone, 
+# Can alternatively use fastest times for everyone,
 # and then add average improvement from track evolution for Q1 and Q2
