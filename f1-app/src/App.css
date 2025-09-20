@@ -182,8 +182,8 @@ h1 {
 }
 
 .back-button {
-  width: 90%;
-  height: 90%;
+  width: 70px;
+  height: 35px;
   border-radius: 40px;
   border: none;
   transition: all 0.25s ease;
@@ -191,7 +191,7 @@ h1 {
 
 .back-button:active {
   background-color: lightgray;
-  width: 60%;
+  width: 55px;
   transition-duration: 0.25s;
 }
 
@@ -385,45 +385,50 @@ dialog {
   padding-left: 3%;
 }
 
-session-results-modal {
-  width: 70%;
-  border-radius: 35px;
-  box-shadow: 0 36px 36px 0 rgba(0, 0, 0, 0.5), 0 50px 50px 0 rgba(0, 0, 0, 0.19);
-  border: none;
-  background-color: rgb(56, 56, 56);
-  position: relative;
-  z-index: 2001;
+/* Dark overlay for backdrop */
+.session-results-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Modal box */
+.session-results-modal {
+  transform: translateY(100vh) scale(0.85);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  background-color: rgb(30, 30, 30);
+  border-radius: 30px;
+  padding: 30px;
+  width: 60%;
+  max-height: 100vh;
+  overflow: hidden;
+  box-shadow: 0 36px 36px rgba(0, 0, 0, 0.5), 0 50px 50px rgba(0, 0, 0, 0.19);
   color: white;
-  padding: 20px;
-  text-align: center;
-  transition: all 0.5s ease;
-  margin-top: -80%;
+  z-index: 10000;
+}
 
-  --duration: 0.55s;
+.session-results-modal.open {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
 
-  transition: 
-    translate var(--duration) ease-in-out,
-    scale     var(--duration) ease-in-out,
-    display   var(--duration) ease-in-out allow-discrete;
+.session-results-modal.closed {
+  transform: translateY(100vh) scale(0.85);
+  opacity: 0;
+}
 
-  &[open] {
-
-    /* Post-Entry (Normal) State */
-    translate: 0 0;
-    scale: 1;
-
-    /* Pre-Entry State */
-    @starting-style {
-      translate: 0 100vh;
-      scale: 0.45;
-    }
-  }
-
-  /* Exiting State */
-  &:not([open]) {
-    translate: 0 -100vh;
-    scale: 0.45;
-  }
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .modal {
@@ -432,21 +437,13 @@ session-results-modal {
   left: 50%;
   transform: translate(-100%, -100%);
   z-index: 2000; /* Ensure it's above other elements */
-  background: white;
+  background: rgb(30, 30, 30);
+  color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
   width: 80%; /* Adjust width based on your layout */
   max-width: 600px; /* Limit the maximum width */
-}
-
-
-.modal-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 2001;
 }
 
 .modal-title {
@@ -455,17 +452,26 @@ session-results-modal {
 }
 
 .results-table {
+  background-color: rgb(30, 30, 30);
+  color: white;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-height: 400px;
+  flex: 1 1 auto; /* allow to grow */
   overflow-y: auto;
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
-  z-index: 2000;
+  max-height: 50vh; /* control scrollable area height */
+  width: 100%;
+  border-top: 1px solid #555;
+  border-bottom: 1px solid #555;
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Chrome, Edge, Safari */
+.results-table::-webkit-scrollbar {
+  display: none;
 }
 
 .result-row {
+  background-color: rgb(30, 30, 30);
   display: flex;
   justify-content: space-between;
   padding: 10px;
@@ -473,16 +479,22 @@ session-results-modal {
   border-bottom: 1px solid lightgray;
 }
 
+.result-row:nth-child(even) {
+  background-color: rgb(50, 50, 50);
+}
+
 .result-row:last-child {
   border-bottom: none;
 }
 
 .driver-abbreviation {
+  color: white;
   font-weight: bold;
   margin-right: 10px;
 }
 
 .lap-time {
+  color: white;
   font-family: "Zen Dots", sans-serif;
 }
 
@@ -504,4 +516,514 @@ session-results-modal {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+
+
+/* Base styles remain the same */
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  /* General container adjustments */
+  .content {
+    width: 92%;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Adjust the curb design for mobile */
+  .curb.left, .curb.right {
+    width: 15px; /* Thinner curbs on mobile */
+  }
+  
+  /* Headers adjustment */
+  h1.display-1 {
+    font-size: 2.2rem; /* Smaller title on mobile */
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    margin: 0.5rem 0 1rem 0 !important; /* Override inline styles */
+    text-align: center;
+  }
+  
+  /* Button container layout change */
+  #buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Make each button container full width */
+  #buttons .col-6, #buttons .col-12 {
+    width: 85%;
+    margin-bottom: 0.75rem;
+    padding: 0;
+  }
+  
+  /* Adjust main buttons */
+  .main.button {
+    width: 100%;
+    margin-bottom: 0.75rem;
+    /* Set a fixed, appropriate height for non-expanded buttons */
+    height: 60px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    max-height: 60px;
+    overflow: hidden;
+  }
+  
+  .main.button h2 {
+    margin: 0 !important;
+  }
+  
+  /* Adjust expanded menus */
+  .main.button.expanded {
+    width: 100%;
+    max-height: 85vh; /* Prevent expanding beyond screen */
+    overflow-y: auto; /* Allow scrolling for tall content */
+  }
+  
+  /* Critical fix for submenu layout */
+  #driver-submenu-top, .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  
+  /* Ensure proper back button alignment */
+  .close-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+  
+  /* Form element adjustments */
+  .input-field {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px; /* iOS minimum to prevent zoom */
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+  
+  .switch-row {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+  }
+  
+  .switch-label {
+    margin-left: 10px;
+  }
+  
+  /* Dialog adjustments */
+  dialog {
+    width: 90%;
+    max-width: 300px;
+    padding: 15px;
+    border-radius: 20px;
+  }
+  
+  /* Ensure submenu-content is properly sized */
+  .submenu-content {
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    position: relative; /* For absolute positioning of close button */
+    overflow-y: visible;
+  }
+  
+  /* Adjust vertical spacing */
+  .vertical-spacer-medium {
+    height: 10px; /* Smaller spacing on mobile */
+  }
+  
+  /* Session results modal adjustments */
+  .session-results-modal {
+    width: 90%;
+    max-width: 320px;
+  }
+  
+  .results-table {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+  
+  /* Calculate button */
+  .enter-button, .dialog-button {
+    width: 100%;
+    padding: 10px 0;
+    margin-top: 10px;
+    min-height: 44px; /* Minimum touch target size */
+  }
+}
+
+/* Extra small devices */
+@media screen and (max-width: 480px) {
+  h1.display-1 {
+    font-size: 1.8rem;
+  }
+  
+  h2 {
+    font-size: 1.3rem;
+  }
+  
+  #buttons .col-6, #buttons .col-12 {
+    width: 90%;
+    justify-content: center;
+    margin-bottom: 0.25rem;
+  }
+
+  .input-label-top {
+    width: 50%;
+  }
+
+  .enter-button {
+    width: 70%;
+  }
+
+  .submenu-content {
+    padding-left: -5%;
+  }
+  
+  /* Prevent UI elements from being too tall on small screens */
+  .main.button.expanded {
+    max-height: 80vh;
+  }
+  
+  /* Increase touch targets for better usability */
+  .input-field {
+    padding: 12px 8px;
+  }
+  
+  .dialog-button, .enter-button {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+}
+
+/* CloseButton styling */
+.close-button-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Ensure the close button is properly positioned on mobile */
+@media screen and (max-width: 768px) {
+  .close-button-wrapper {
+    margin-left: auto;
+  }
+  
+  /* Force the proper layout for the top row */
+  #driver-submenu-top {
+    display: flex !important; 
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding-right: 0 !important;
+  }
+  
+  /* Make sure there's no overflow in expanded menus that causes scrollbars */
+  .main.button.expanded .submenu-content {
+    overflow: visible !important;
+  }
+  
+  /* Add scrolling for the content instead */
+  .main.button.expanded {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* For iOS */
+  }
+  
+  /* Fix input fields truncation */
+  .input-field {
+    width: 100% !important;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+  }
+  
+  /* Fix dialog display on mobile */
+  .mobile-dialog {
+    width: 85%;
+    max-width: 320px;
+    padding: 15px;
+    border-radius: 20px;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure dialogs are centered */
+  dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Better touch targets for mobile */
+  .switch {
+    transform: scale(1.2);
+    margin-right: 10px;
+  }
+  
+  /* Text sizing */
+  .input-label, .input-label-top, .switch-label {
+    font-size: 16px;
+  }
+}
+
+/* Animation improvements */
+.main.button {
+  transition: all 0.3s ease-in-out;
+}
+
+.main.button.expanded {
+  transition: all 0.3s ease-in-out;
+}
+
+@media screen and (max-width: 768px) {
+  /* Make form elements smaller */
+  .input-field {
+    font-size: 14px;
+    height: 36px;
+    padding: 6px 8px;
+  }
+  
+  /* Labels smaller */
+  .input-label, .input-label-top {
+    font-size: 15px;
+  }
+  
+  /* Reduce vertical space */
+  .vertical-spacer-medium {
+    height: 8px;
+  }
+  
+  /* Keep Calculate button prominent */
+  .enter-button {
+    width: 70%;
+    margin: 8px auto;
+    display: block;
+  }
+  
+  /* Shift content left */
+  .submenu-content {
+    padding-left: 8px;
+  }
+
+  .back-button {
+    width: 55px;
+    height: 30px;
+    margin-right: -15px;
+    padding-right: -10px;
+  }
+  
+  /* Adjust the close button container */
+  .close-button-wrapper {
+    margin-left: auto;
+    padding-right: 0px;
+  }
+  
+  /* Ensure the back image is scaled properly */
+  .back-image {
+    width: 45%;
+    height: 65%;
+  }
+
+  .input-label-top {
+    margin-right: none;
+    padding-right: none;
+  }
+
+  #driver-button .submenu-content,
+  #session-button .submenu-content {
+    width: 100% !important;
+    margin: 0 !important;
+    padding-right: 15px !important; /* Force even padding on all sides */
+    box-sizing: border-box !important; /* CRITICAL: Ensures padding is included in the width */
+  }
+}
+
+/* Fix for desktop scrollbar issue */
+.main.button.expanded {
+  overflow: visible !important;
+  height: 350% !important;
+}
+
+.submenu-content {
+  overflow: hidden !important;
+}
+
+.horizontal-spacer {
+  width: 0px;
+  display: flex;
+}
+
+/* Reset button styling to original */
+.main.button {
+  background-color: darkred;
+  width: 90%;
+  height: 80%;
+  color: white;
+  border-radius: 35px;
+  margin: auto;
+  padding-top: 7.5%;
+  padding-bottom: 9%;
+  font-family: "Zen Dots";
+  font-size: larger;
+  border: none;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  transition: all 0.5s ease;
+  display: block !important;
+  overflow: hidden !important;
+}
+
+/* Remove any flex positioning that may have been added */
+.button-content {
+  display: block;
+}
+
+/* Fix for the back button alignment */
+#driver-submenu-top {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+.input-label-top {
+  width: auto !important;
+  margin-right: auto !important;
+}
+
+.back-button-container {
+  width: auto !important;
+  margin-left: auto !important;
+}
+
+.back-button {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+/* Remove any display:block that might be interfering */
+.close-button-wrapper {
+  display: flex !important;
+  justify-content: flex-end !important;
+  width: auto !important;
+}
+
+/* Fix for mobile expansion and overflow issues */
+@media screen and (max-width: 768px) {
+  /* Prevent content from appearing outside during animation */
+  .main.button {
+    overflow: hidden !important;
+  }
+  
+  .main.button.expanded {
+    overflow: visible !important;
+    transition: all 0.5s ease !important;
+  }
+  
+  /* Fix overlapping buttons by adding proper margin */
+  #buttons .col-6, #buttons .col-12 {
+    margin-bottom: 15px !important;
+  }
+  
+  /* Fix for curb display on mobile */
+  .curb.left, .curb.right {
+    width: 5% !important;
+    background-size: 4% 20% !important;
+  }
+  
+  /* Ensure content is properly contained */
+  .submenu-content {
+    opacity: 0;
+    animation: fadeIn 0.3s ease-in-out 0.2s forwards;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Ensure proper spacing between elements */
+  .vertical-spacer-medium {
+    height: 10px;
+  }
+}
+
+/* Adjust overflow behavior */
+.main.button.expanded .button-content {
+  overflow: hidden !important;
+  transition: all 0.5s ease-in-out;
+}
+
+/* Adjustments for mobile view */
+@media screen and (max-width: 768px) {
+  /* Move close button further right */
+  .back-button {
+    margin-right: -30px !important;
+  }
+  
+  .close-button-wrapper {
+    padding-right: 8px !important;
+  }
+  
+  /* Fix Calculate button text overflow */
+  .enter-button {
+    width: 90% !important; /* Wider button */
+    font-size: 15px !important; /* Smaller text */
+  }
+  
+  /* Reduce Session submenu height on mobile */
+  #session-button.expanded {
+    max-height: 500px !important; /* Adjust this value as needed */
+  }
+  
+  /* Keep Driver button at appropriate size */
+  #driver-button.expanded {
+    max-height: 620px !important; /* Adjust as needed */
+  }
+
+  /* Ensure text doesn't overflow in Calculate button */
+  .internal-button {
+    text-overflow: ellipsis !important;
+    font-size: medium !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Additional adjustment for button placement */
+.back-button-container {
+  display: flex !important;
+  justify-content: flex-end !important;
+  padding-right: 5px !important;
+}
+
+/* Force proper positioning for iOS */
+@supports (-webkit-touch-callout: none) {
+  /* iOS specific override */
+  .main.button.expanded {
+    position: relative;
+    z-index: 10;
+  }
+  
+  dialog.mobile-dialog {
+    max-width: 85vw;
+  }
 }
